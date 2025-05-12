@@ -28,18 +28,18 @@ async def handle_webhook():
     await application.process_update(update)
     return "ok", 200
 
-async def setup():
-    await application.initialize()
-    webhook_url = f"https://{os.getenv('RENDER_EXTERNAL_HOSTNAME')}/webhook/{WEBHOOK_SECRET}"
-    await application.bot.set_webhook(webhook_url)
-    print(f"Webhook set to: {webhook_url}")
+# async def setup():
+#     await application.initialize()
+#     webhook_url = f"https://{os.getenv('RENDER_EXTERNAL_HOSTNAME')}/webhook/{WEBHOOK_SECRET}"
+#     await application.bot.set_webhook(webhook_url)
+#     print(f"Webhook set to: {webhook_url}")
 
 
 def main():
-    # webhook_url = f"https://{os.getenv('RENDER_EXTERNAL_HOSTNAME')}/webhook/{WEBHOOK_SECRET}"
-    # asyncio.run(application.initialize())
-    # asyncio.run(application.bot.set_webhook(webhook_url))
-    # print(f"Webhook set to: {webhook_url}")
+    webhook_url = f"https://{os.getenv('RENDER_EXTERNAL_HOSTNAME')}/webhook/{WEBHOOK_SECRET}"
+    asyncio.run(application.initialize())
+    asyncio.run(application.bot.set_webhook(webhook_url))
+    print(f"Webhook set to: {webhook_url}")
     
     asyncio.run(setup())
     port = int(os.environ.get("PORT", 10000))
