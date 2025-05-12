@@ -4,6 +4,8 @@ import asyncio
 from flask import Flask, request
 from telegram import Update
 
+from hypercorn.asyncio import serve
+from hypercorn.config import Config
 from telegram.ext import (
     ApplicationBuilder,
     CommandHandler,
@@ -35,16 +37,17 @@ async def handle_webhook():
 #     print(f"Webhook set to: {webhook_url}")
 
 
-def main():
+async def main():
+    await application.initialize()
     webhook_url = f"https://{os.getenv('RENDER_EXTERNAL_HOSTNAME')}/webhook/{WEBHOOK_SECRET}"
-    asyncio.run(application.initialize())
-    asyncio.run(application.bot.set_webhook(webhook_url))
-    print(f"Webhook set to: {webhook_url}")
-    
-    asyncio.run(setup())
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host="0.0.0.0", port=port)
+    await application.bot.set_webhook(webhook_url)
+    print(f"✅ Webhook установлен: {webhook_url}")
 
+    from hypercorn.asyncio import serve
+    from hypercorn.config import Config
+    config = Config()
+    config.bind = [f"0.0.0.0:{os.environ.get('PORT', '10000')}"]
+    await serve(app, config)
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
