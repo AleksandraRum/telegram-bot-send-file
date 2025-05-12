@@ -1,7 +1,9 @@
 import os
-from flask import Flask, request
+import asyncio
 
+from flask import Flask, request
 from telegram import Update
+
 from telegram.ext import (
     ApplicationBuilder,
     CommandHandler,
@@ -33,7 +35,7 @@ async def handle_webhook():
 
 def main():
     webhook_url = f"https://{os.getenv('RENDER_EXTERNAL_HOSTNAME')}/webhook/{WEBHOOK_SECRET}"
-    application.bot.set_webhook(webhook_url)
+    asyncio.run(application.bot.set_webhook(webhook_url))
     print(f"Webhook set to: {webhook_url}")
 
     port = int(os.environ.get("PORT", 10000))
