@@ -6,7 +6,6 @@ from telegram.ext import (
     ApplicationBuilder,
     CommandHandler,
     CallbackQueryHandler,
-    ContextTypes,
 )
 
 from config import BOT_TOKEN, WEBHOOK_SECRET
@@ -32,14 +31,11 @@ async def handle_webhook():
     return "ok", 200
 
 
-# Установка вебхука при первом запросе
-@app.before_first_request
-def set_webhook():
+def main():
     webhook_url = f"https://{os.getenv('RENDER_EXTERNAL_HOSTNAME')}/webhook/{WEBHOOK_SECRET}"
     application.bot.set_webhook(webhook_url)
+    print(f"Webhook set to: {webhook_url}")
 
-
-def main():
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
 
